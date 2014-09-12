@@ -2,13 +2,17 @@ gulp = require 'gulp'
 plumber = require 'gulp-plumber'
 concat = require 'gulp-concat'
 mainBowerFiles = require 'main-bower-files'
-source      = require 'vinyl-source-stream'
+source = require 'vinyl-source-stream'
 coffee = require 'gulp-coffee'
 browserify = require 'browserify'
 rsync = require 'gulp-rsync'
+runSequence = require 'run-sequence'
+watch = require 'gulp-watch'
+sequence = require 'gulp-watch-sequence'
 
 gulp.task 'coffee', ->
   gulp.src './server/src/**/*.coffee'
+    .pipe plumber()
     .pipe coffee bare: true
     .pipe gulp.dest './server/build'
 
@@ -35,9 +39,11 @@ gulp.task 'deploy', ->
       destination: './public'
 
 gulp.task 'watch', ['build'], ->
-  gulp.watch './server/src/**/*.coffee', ['coffee']
-  gulp.watch './client/src/**/*.coffee', ['coffeeify']
-  gulp.watch './bower_components/**/*.js', ['vendor']
+  queue = sequence 1000
+  watch './server/src/**/*.coffee', ['coffee']
+  watch './client/src/**/*.coffee', queue.getHandler 'coffeeify', 'deploy'
+  watch './bower_components/**/*.js', queue.getHandler 'vendor', 'deploy'
 
 gulp.task 'build', ['coffee', 'coffeeify', 'vendor']
-gulp.task 'default', ['build']
+gulp.task 'default', (callback) ->
+  runSequence 'build', 'deploy', callback
