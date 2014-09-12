@@ -20,6 +20,7 @@
     "gulp-watch": "^1.0.2",
     "gulp-watch-sequence": "0.0.4",
     "main-bower-files": "^2.0.0",
+    "node-dev": "^2.4.0",
     "run-sequence": "^0.3.6",
     "vinyl-source-stream": "^1.0.0"
   },
