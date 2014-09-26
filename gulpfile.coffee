@@ -40,7 +40,7 @@ gulp.task 'deploy', ->
 
 gulp.task 'watch', ['build'], ->
   queue = sequence 1000
-  watch './server/src/**/*.coffee', ['coffee']
+  watch './server/src/**/*.coffee', queue.getHandler 'coffee'
   watch './client/src/**/*.coffee', queue.getHandler 'coffeeify', 'deploy'
   watch './bower_components/**/*.js', queue.getHandler 'vendor', 'deploy'
 
