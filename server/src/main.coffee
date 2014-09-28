@@ -23,10 +23,12 @@ main = () ->
 
   # WebSocket接続確立コールバック
   io.on 'connection', (socket) ->
+    # 空きがあるworldを見つける
     world = _.find worlds, (world) ->
       world.playerCount < 20
 
-    world?.onPlayerConnect(new Player socket, world)
+    # プレイヤー接続完了
+    world?.emit 'playerConnect', new Player(socket, world)
 
   # TODO: error handling
 
